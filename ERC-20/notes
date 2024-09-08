@@ -1,0 +1,85 @@
+cast wallet import defaultkey --interactive : utiliser ERC-2335 pour crypter la clé privée
+ et ca sera stockée dans defaultkey
+
+cast wallet list:Pour voir les comptes importés
+
+ forge create SimpleStorage --rpc-url 127.0.0.1:8545 --account defaultKey: Pour deployer 
+ le smart contract sans script
+ forge script script/DeploySimpleStorage.s.sol --rpc-url 127.0.0.1:8545 --broadcast --account defaultKey
+ or forge script script/DeploySimpleStorage.s.sol --rpc-url  $RPC_URL --broadcast --private-key $PRIVATE_KEY
+ or
+ forge script script/DeploySimpleStorage.s.sol:DeploySimpleStorage --broadcast --rpc-url $RPC_URL --account defaultKey
+  --sender 0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+
+ cast --to-base 0x7587f dec: Convertir d'hexdecimal à decimal
+
+ source .env: Ajouter les variables d'environnement au shell
+
+ cast send 0x5fc8d32690cc91d4c39d9d3abcbd16989f875707 "store(uint256)" 123 
+ --rpc-url $RPC_URL --account defaultKey: Pour effectuer une transaction.
+  La signature est store(uint256) et l'adresse du smart contract est
+ 0x5fc8d32690cc91d4c39d9d3abcbd16989f875707
+
+ cast call 0x5fc8d32690cc91d4c39d9d3abcbd16989f875707 "retrieve()":
+ Pour effectuer l'appel à une fonction du smart contract (pure ou view) pour recuperer une
+ valeur
+
+ forge script script/DeploySimpleStorage.s.sol --broadcast --rpc-url $SEPOLIA_URL
+  --account sepolia_account --sender $SEPOLIA_ADDRESS 
+
+ ----   FOUNDRY-ZKSYNC-----
+git clone https://github.com/matter-labs/foundry-zksync
+cd foundry-zksync
+./install-foundry-zksync
+foundryup-zksync : pour passer à zksync foundry
+foundryup : pour passer à vanilla foundry
+
+  forge script script/DeploySimpleStorage.s.sol --broadcast --rpc-url $RPC_URL --account defaultKey --legacy : en ajoutant l'option --legacy le type de la transaction est 0x0
+  transactions type:
+  0x0: legacy -> on a le paramètre gasPrice
+  0x1: EIP-2930
+  0x02: EIP-1559-> intorduction du base fee par gas 
+
+  end: 9:58
+
+   forge install smartcontractkit/chainlink-brownie-contracts --no-commit : Pour installer
+   des contracts pour les utiliser comme on le fait avec npm
+
+  end: 14:36
+
+  /************RAFFLE.SOL**************/
+  ##chainlink VRF
+  uint256 s_subscriptionId;
+  address vrfCoordinator = 0x9DdfaCa8183c41ad55329BdeeD9F6A8d53168B1B;
+  bytes32 s_keyHash = 0x787d74caea10b2b357790d5b5247c2f63d1d91572a9846f780606e4d953677ae;
+  uint32 callbackGasLimit = 40000;
+  uint16 requestConfirmations = 3;
+  uint32 numWords =  1;
+    Le paramètre s_keyHash, souvent appelé "gas lane", est une façon de sélectionner la "gas lane" pour les requêtes VRF (Verifiable Random Function) avec Chainlink. En gros, il s'agit d'un identifiant qui permet au réseau Chainlink de savoir quel groupe d'oracles utiliser pour générer un nombre aléatoire, tout en respectant une limite de gas spécifique.
+
+  - forge fmt : pour formater le code
+  ##Chainlink Automation
+
+  ## Tests!
+  1.Write deploy scripts
+    1.Note this will not work on zksync
+  2.Write tests
+    1.Local chain
+    2.Forked testnet
+    3.Forked mainnet
+
+end: 16:41
+end: 17:44
+end: 18:10
+cast sig "createSubscription()"
+->In local use VRFCoordinatorV2_5Mock contract
+->Create subscription 
+->Add funds 
+->Add cousumer
+foundry devops https://github.com/Cyfrin/foundry-devops to interact wtih previous deployed
+contract
+
+forge coverage -> to get the number of lines already tested
+forge coverage --report debug > coverage.txt
+ forge verify-contract 0x6e389ebb311263a111630afdf85d655ab9ecdee4 src/Raffle.sol:Raffle --rpc-url $SEPOLIA_URL --show-standard-json-input > json.json
+ forge test --debug testRaffleRevertsWhenYouDontPayEnough
