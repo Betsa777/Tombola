@@ -83,3 +83,7 @@ forge coverage -> to get the number of lines already tested
 forge coverage --report debug > coverage.txt
  forge verify-contract 0x6e389ebb311263a111630afdf85d655ab9ecdee4 src/Raffle.sol:Raffle --rpc-url $SEPOLIA_URL --show-standard-json-input > json.json
  forge test --debug testRaffleRevertsWhenYouDontPayEnough
+
+
+ /**********STABLECOIN PART*********/
+ end: 25:25
