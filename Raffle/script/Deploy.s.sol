@@ -4,13 +4,18 @@ import {Script, console} from "forge-std/Script.sol";
 import {HelperConfig} from "./HelperConfig.s.sol";
 import {Raffle} from "src/Raffle.sol";
 import {CreateSubscription, FundSubscription, AddConsumer} from "./MyInteractions.s.sol";
+import {Random} from "../src/Random.sol";
+import {VRFCoordinatorV2_5Mock} from "lib/chainlink-brownie-contracts/contracts/src/v0.8/vrf/mocks/VRFCoordinatorV2_5Mock.sol";
 
 contract Deploy is Script {
     function run() public {
         deployContract();
     }
 
-    function deployContract() public returns (Raffle, HelperConfig) {
+    function deployContract()
+        public
+        returns (Random, HelperConfig.NetworkConfig memory)
+    {
         HelperConfig helperConfig = new HelperConfig();
         HelperConfig.NetworkConfig memory config = helperConfig.getConfig();
         if (config.subscriptionId == 0) {
@@ -27,24 +32,18 @@ contract Deploy is Script {
             );
         }
         vm.startBroadcast();
-        Raffle raffle = new Raffle(
-            config.entraceFee,
-            config.interval,
-            config.vrfCoordinator,
-            config.gasLane,
-            config.callbackGasLimit,
-            config.subscriptionId
-        );
+        Random rand = new Random(VRFCoordinatorV2_5Mock(config.vrfCoordinator));
         vm.stopBroadcast();
         //Add consumer -> utiliser VRF dans le contract Raffle
         AddConsumer addConsumer = new AddConsumer();
         // console.log("Contract is :", raffle);
         // console.log("Is address is: ", address(raffle));
         addConsumer.addConsumer(
-            address(raffle),
+            address(rand),
             config.subscriptionId,
             config.vrfCoordinator
         );
-        return (raffle, helperConfig);
+        console.log("Contract address is :", address(rand));
+        return (rand, config);
     }
 }

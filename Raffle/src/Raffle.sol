@@ -31,6 +31,7 @@ pragma solidity 0.8.19;
 import {VRFConsumerBaseV2Plus} from "@chainlink/contracts/v0.8/vrf/dev/VRFConsumerBaseV2Plus.sol";
 import {VRFV2PlusClient} from "lib/chainlink-brownie-contracts/contracts/src/v0.8/vrf/dev/libraries/VRFV2PlusClient.sol";
 import {AutomationCompatibleInterface} from "lib/chainlink-brownie-contracts/contracts/src/v0.8/automation/AutomationCompatible.sol";
+import {VRFCoordinatorV2_5Mock} from "lib/chainlink-brownie-contracts/contracts/src/v0.8/vrf/mocks/VRFCoordinatorV2_5Mock.sol";
 
 /**
  * @title A sample raffle contract
@@ -225,4 +226,20 @@ contract Raffle is VRFConsumerBaseV2Plus, AutomationCompatibleInterface {
     function getRecentWinner() external view returns (address) {
         return s_recentWinner;
     }
+    // function vrfCor() public{
+    //      uint256 requestID = s_vrfCoordinator.requestRandomWords(
+    //         VRFV2PlusClient.RandomWordsRequest({
+    //             keyHash: i_keyHash,
+    //             subId: i_subscriptionId,
+    //             requestConfirmations: REQUEST_CONFIRMATIONS,
+    //             callbackGasLimit: i_callbackGasLimit,
+    //             numWords: NUM_WORDS,
+    //             extraArgs: VRFV2PlusClient._argsToBytes(
+    //                 //set nativePayment to true to pay in Eth sepolia instead of LINK
+    //                 VRFV2PlusClient.ExtraArgsV1({nativePayment: false})
+    //             ) // new parameter
+    //         })
+    //     );
+    //    VRFCoordinatorV2_5Mock(s_vrfCoordinator).fulfillRandomWords(requestID,);
+    // }
 }
